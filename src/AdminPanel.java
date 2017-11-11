@@ -106,11 +106,9 @@ public class AdminPanel extends JFrame implements UIBuild{
 
     public void treeManager(){
         // initialize tree nodes
-        DefaultMutableTreeNode leftSide = new DefaultMutableTreeNode("Tree View");
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
 
-        leftSide.add(root);
-        tree = new JTree(leftSide);
+        tree = new JTree(root);
         treeview = new JScrollPane(tree);
         treeview.setBounds(5,5,245,275);
     }
@@ -135,11 +133,48 @@ public class AdminPanel extends JFrame implements UIBuild{
         groupIdLabel.setBounds(337, 41, 150, 35);
     }
 
+    public void addGroup(){
+        TreePath[] tp = tree.getSelectionPaths();
+        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        DefaultMutableTreeNode newGroup = new DefaultMutableTreeNode(groupId.getText());
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
+        boolean setText = false;
+
+        if(tp != null){
+            // selection paths are not empty
+            for(TreePath tree: tp){
+                if(!userId.getText().isEmpty() && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
+                    // text field is not empty and the specified path in the tree allows children leafs
+//                  add folder to tree, come back to this
+                    rootNode.add(new DefaultMutableTreeNode(userId.getText()));
+                    model.reload();
+                    userId.setText("");
+                    setText = true;
+                }
+            }
+        }else{
+            // user has not selected path
+            // insert user into root by default
+            model.insertNodeInto(newGroup, rootNode, rootNode.getChildCount());
+            model.reload();
+            userId.setText("");
+            setText = true;
+        }
+
+        if(userId.getText().isEmpty() && !setText){
+            // completely empty input field
+            JOptionPane.showMessageDialog(frame, "Error: No user group to add !");
+        }
+
+    }
+
     public void addUser(){
         TreePath[] tp = tree.getSelectionPaths();
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(userId.getText());
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
         boolean setText = false;
 
         if(tp != null){
@@ -155,10 +190,15 @@ public class AdminPanel extends JFrame implements UIBuild{
             }
         }else{
             // user has not selected path
-            JOptionPane.showMessageDialog(frame, "Error: Select a path to insert new user !");
+            // insert user into root by default
+            model.insertNodeInto(newUser, rootNode, rootNode.getChildCount());
+            model.reload();
+            userId.setText("");
+            setText = true;
         }
 
         if(userId.getText().isEmpty() && !setText){
+            // completely empty input field case
             JOptionPane.showMessageDialog(frame, "Error: No user to add !");
         }
 
@@ -180,6 +220,12 @@ public class AdminPanel extends JFrame implements UIBuild{
         addGroup = new JButton();
         addGroup.setText("Add Group");
         addGroup.setBounds(550, 41, 150, 35);
+        addGroup.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addGroup();
+            }
+        });
 
         // open user view button
         userView = new JButton();
