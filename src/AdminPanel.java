@@ -11,6 +11,9 @@ public class AdminPanel extends JFrame implements UIBuild{
     // main frame
     JFrame frame;
 
+    // user controller
+    UserController userController;
+
     // treeview
     JScrollPane treeview;
     private JTree tree;
@@ -46,6 +49,7 @@ public class AdminPanel extends JFrame implements UIBuild{
     }
 
     public void UIbuilder(){
+        userController = new UserController();
         treeManager();
         buttonManager();
         labelManager();
@@ -144,25 +148,26 @@ public class AdminPanel extends JFrame implements UIBuild{
         if(tp != null){
             // selection paths are not empty
             for(TreePath tree: tp){
-                if(!userId.getText().isEmpty() && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
+                if(!groupId.getText().trim().equals("") && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
                     // text field is not empty and the specified path in the tree allows children leafs
 //                  add folder to tree, come back to this
-                    rootNode.add(new DefaultMutableTreeNode(userId.getText()));
+                    rootNode.add(new DefaultMutableTreeNode(groupId.getText()));
+                    userController.addGroup(groupId.getText());
                     model.reload();
-                    userId.setText("");
+                    groupId.setText("");
                     setText = true;
                 }
             }
-        }else{
+        }else if (tp == null && !groupId.getText().trim().equals("")){
             // user has not selected path
             // insert user into root by default
             model.insertNodeInto(newGroup, rootNode, rootNode.getChildCount());
             model.reload();
-            userId.setText("");
+            groupId.setText("");
             setText = true;
         }
 
-        if(userId.getText().isEmpty() && !setText){
+        if(groupId.getText().trim().equals("") && !setText){
             // completely empty input field
             JOptionPane.showMessageDialog(frame, "Error: No user group to add !");
         }
@@ -180,24 +185,26 @@ public class AdminPanel extends JFrame implements UIBuild{
         if(tp != null){
             // selection paths are not empty
             for(TreePath tree: tp){
-                if(!userId.getText().isEmpty() && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
+                if(!userId.getText().trim().equals("") && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
                     // text field is not empty and the specified path in the tree allows children leafs
                     model.insertNodeInto(newUser, selectedNode, selectedNode.getChildCount());
+                    userController.addUser(userId.getText());
                     model.reload();
                     userId.setText("");
                     setText = true;
                 }
             }
-        }else{
+        }else if (tp == null && !userId.getText().trim().equals("")){
             // user has not selected path
             // insert user into root by default
             model.insertNodeInto(newUser, rootNode, rootNode.getChildCount());
+            userController.addUser(userId.getText());
             model.reload();
             userId.setText("");
             setText = true;
         }
 
-        if(userId.getText().isEmpty() && !setText){
+        if(userId.getText().trim().equals("") && !setText){
             // completely empty input field case
             JOptionPane.showMessageDialog(frame, "Error: No user to add !");
         }
