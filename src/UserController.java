@@ -13,6 +13,14 @@ public class UserController extends DefaultMutableTreeNode{
         groups = new ArrayList<>();
     }
 
+    public List<String> getUsers() {
+        return users;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
     // leaf being added directly to the root of the tree
     public DefaultMutableTreeNode addLeaf(String userId, DefaultMutableTreeNode rootNode){
         DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(new User(userId));
@@ -64,5 +72,14 @@ public class UserController extends DefaultMutableTreeNode{
           }
       }
       return false;
+    }
+
+    public boolean checkUserRepeat(String userId){
+        for(String x: users){
+            if(x.equals(userId)){
+                return true;
+            }
+        }
+        return false;
     }
 }

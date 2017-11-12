@@ -237,8 +237,12 @@ public class AdminPanel extends JFrame implements UIBuild{
     public void openUserView(){
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         // if the selected node is not empty and is in fact a user (check by checking if node allows children)
+
         if(selectedNode != null && !selectedNode.getAllowsChildren()){
-            UserUI.getInstance().setVisible(true);
+            User selectedUser= (User)selectedNode.getUserObject();
+            UserUI userView = new UserUI(selectedUser);
+        }else {
+            JOptionPane.showMessageDialog(frame, "Error: Select user from tree!");
         }
 
     }

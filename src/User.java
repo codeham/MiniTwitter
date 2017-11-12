@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class User extends Subject implements Observer{
+public class User extends Subject implements Observer, UserComponent{
     private String userId;
     private List<User> followers;
     private List<User> following;
@@ -38,6 +38,7 @@ public class User extends Subject implements Observer{
         // cache incoming tweets for tree views in UI
         tweets.add(message);
         this.incomingTweet = message;
+        System.out.println("TWEET MESSAGE RECEIVED :  " + message );
         notifyObserver();
     }
 
@@ -45,5 +46,15 @@ public class User extends Subject implements Observer{
     public void updateFeed(Subject tweet) {
         incomingTweet = ((User) tweet).getIncomingTweet();
         newsfeed.add(incomingTweet);
+    }
+
+    @Override
+    public UserComponent getComponent() {
+        return null;
+    }
+
+    @Override
+    public void addUserComponent(UserComponent newUserComponent) {
+
     }
 }

@@ -1,5 +1,7 @@
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class UserUI extends JFrame implements UIBuild{
     // Jframe main
@@ -20,15 +22,17 @@ public class UserUI extends JFrame implements UIBuild{
     private JTextField userId;
     private JTextField twitterMessage;
 
-    //static instance
-    private static UserUI instance = new UserUI();
+    // user
+    User user;
 
     UserUI(){
         UIbuilder();
     }
 
-    public static UserUI getInstance(){
-        return instance;
+    UserUI(User user){
+        this.user = user;
+        System.out.println("User ID opened is: " + user.getUserId());
+        UIbuilder();
     }
 
     private void UIbuilder(){
@@ -41,8 +45,8 @@ public class UserUI extends JFrame implements UIBuild{
     public void frameManager(){
         frame = new JFrame();
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setTitle("User View");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setTitle("@" + user.getUserId());
         frame.setResizable(false);
         frame.setLayout(null);
 
@@ -105,5 +109,18 @@ public class UserUI extends JFrame implements UIBuild{
         postTweet = new JButton();
         postTweet.setText("Post Tweet");
         postTweet.setBounds(255, 325, 245, 35);
+        postTweet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                postUserTweet();
+            }
+        });
+    }
+
+    public void postUserTweet(){
+        String message = twitterMessage.getText();
+        this.user.tweetMessage(message);
+        twitterMessage.setText("");
+        // observer notified by User object...
     }
 }
