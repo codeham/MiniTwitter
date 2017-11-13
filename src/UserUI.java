@@ -7,6 +7,9 @@ public class UserUI extends JFrame implements UIBuild{
     // Jframe main
     JFrame frame;
 
+    // Admin Panel Instance
+    AdminPanel adminPanel;
+
     // JPane
     JScrollPane topPane;
     JScrollPane bottomPane;
@@ -32,6 +35,7 @@ public class UserUI extends JFrame implements UIBuild{
     UserUI(User user){
         this.user = user;
         System.out.println("User ID opened is: " + user.getUserId());
+        adminPanel = AdminPanel.getInstance();
         UIbuilder();
     }
 
@@ -105,6 +109,12 @@ public class UserUI extends JFrame implements UIBuild{
         followUser = new JButton();
         followUser.setText("Follow User");
         followUser.setBounds(255, 5, 245, 35);
+        followUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                followUser();
+            }
+        });
 
         postTweet = new JButton();
         postTweet.setText("Post Tweet");
@@ -122,5 +132,33 @@ public class UserUI extends JFrame implements UIBuild{
         this.user.tweetMessage(message);
         twitterMessage.setText("");
         // observer notified by User object...
+    }
+
+    public void followUser(){
+        // check if the field isn't empty, check if the user exists, check if the user isn't already following
+        String twitterUser = userId.getText();
+        if(twitterUser.trim().equals("")){
+            // empty field, throw error to user
+            JOptionPane.showMessageDialog(frame, "Error: Enter a user ID !");
+//            userId.setText("");
+//            return;
+        }
+
+        // check if user is already a follower
+        if(user.checkAlreadyFollower(twitterUser)){
+            JOptionPane.showMessageDialog(frame, "Error: Already following that user !");
+//            userId.setText("");
+//            return;
+        }
+
+        // otherwise check if that user exists then add them to your followers list
+        if(adminPanel.userController.checkUserExists(twitterUser)){
+            System.out.println(twitterUser + " is now following you " + user.getUserId());
+
+        }else{
+            JOptionPane.showMessageDialog(frame, "Error: User does not exist");
+        }
+
+        userId.setText("");
     }
 }

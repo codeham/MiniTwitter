@@ -74,7 +74,7 @@ public class UserController extends DefaultMutableTreeNode{
       return false;
     }
 
-    public boolean checkUserRepeat(String userId){
+    public boolean checkUserExists(String userId){
         for(String x: users){
             if(x.equals(userId)){
                 return true;

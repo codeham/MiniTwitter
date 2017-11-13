@@ -36,14 +36,21 @@ public class AdminPanel extends JFrame implements UIBuild{
     private JButton[] buttons;
 
     // static instance
-    private static AdminPanel instance = new AdminPanel();
+    private static AdminPanel INSTANCE = new AdminPanel();
 
     public AdminPanel(){
         UIbuilder();
     }
 
     public static AdminPanel getInstance(){
-        return instance;
+        if (INSTANCE == null) {
+            synchronized (AdminPanel.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new AdminPanel();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     public void UIbuilder(){
@@ -86,20 +93,6 @@ public class AdminPanel extends JFrame implements UIBuild{
 
         frame.add(groupTotal);
         frame.add(positivePercentage);
-
-        // initialize panel
-//        JPanel panel = new JPanel();
-
-//        frame.add(panel);
-//        TextArea x = new TextArea(5,30);
-//        JTextField field = new JTextField(20);
-//        frame.setLayout(new FlowLayout());
-//        panel.add(x);
-//
-//        JButton button = new JButton("Click here to get scammed");
-//        panel.add(button);
-
-
 
         frame.setSize(715,330);
         frame.setVisible(true);
@@ -157,7 +150,7 @@ public class AdminPanel extends JFrame implements UIBuild{
             for(TreePath tree: tp){
                 if(!groupId.getText().trim().equals("") && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
                     // text field is not empty and the specified path in the tree allows children leafs
-//                  add folder to tree, come back to this
+                    // add folder to tree, come back to this
                     userController.addGroup(selectedNode, groupId.getText());
                     renderer.setLeafIcon(folderIcon);
                     model.reload();
@@ -168,7 +161,7 @@ public class AdminPanel extends JFrame implements UIBuild{
         }else if (tp == null && !groupId.getText().trim().equals("")){
             // user has not selected path
             // insert user into root by default
-//            model.insertNodeInto(newGroup, rootNode, rootNode.getChildCount());
+            //            model.insertNodeInto(newGroup, rootNode, rootNode.getChildCount());
             userController.addGroup(rootNode, groupId.getText());
             model.reload();
             groupId.setText("");
@@ -190,7 +183,7 @@ public class AdminPanel extends JFrame implements UIBuild{
         DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
         boolean setText = false;
 
-        if(userController.checkUserRepeat(userId.getText())){
+        if(userController.checkUserExists(userId.getText())){
             JOptionPane.showMessageDialog(frame, "Error: User already exists !");
             userId.setText("");
             return;
