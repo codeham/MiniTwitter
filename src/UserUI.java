@@ -20,8 +20,14 @@ public class UserUI extends JFrame implements UIBuild{
     // bottom list panel
     JList bottomPanelList;
 
+    // news feed model
+    DefaultListModel<String> newsfeedModel;
+
     // followers list
     JList<String> followers = new JList<>();
+
+    // tweets list ( news feed )
+    JList<String> currentFeed = new JList<>();
 
     // JPane
     JScrollPane topPane;
@@ -97,6 +103,10 @@ public class UserUI extends JFrame implements UIBuild{
         bottomPanelList = new JList();
         bottomPanelList.setName("News Feed");
         bottomPanelList.setBounds(5,370,495,245);
+        newsfeedModel = new DefaultListModel<>();
+        bottomPanelList.setModel(newsfeedModel);
+
+        populateNewsFeedModel();
 
     }
 
@@ -141,6 +151,7 @@ public class UserUI extends JFrame implements UIBuild{
         this.user.tweetMessage(message);
         twitterMessage.setText("");
         // observer notified by User object...
+        populateNewsFeedModel();
     }
 
     public void followUser(){
@@ -173,6 +184,7 @@ public class UserUI extends JFrame implements UIBuild{
             // add yourself to their followers list
             // register to observer to get tweets (Observer Pattern)
             user.addToFollowing(followingUser);
+            // clears the list and updates it
             userModel.clear();
             populateUserModel();
             followingUser.addToFollowers(user);
@@ -193,6 +205,17 @@ public class UserUI extends JFrame implements UIBuild{
         }
         for(User x: currentFollowings){
             userModel.addElement(x);
+        }
+    }
+
+    public void populateNewsFeedModel(){
+        // populate the news feed model with current news feed
+        List<String> currentFeed = user.getNewsfeed();
+        if(currentFeed == null){
+            System.out.println("No activity in news feed");
+        }
+        for(String x: currentFeed){
+            newsfeedModel.addElement(x);
         }
     }
 

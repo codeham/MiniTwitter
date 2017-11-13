@@ -18,6 +18,7 @@ public class User extends Subject implements Observer, UserComponent{
         tweets = new ArrayList<>();
         followers = new ArrayList<>();
         following = new ArrayList<>();
+        newsfeed = new ArrayList<>();
     }
 
     public String getUserId() {
@@ -32,12 +33,12 @@ public class User extends Subject implements Observer, UserComponent{
         return following;
     }
 
-    public void updateFollowingList(){
-        int i = 0;
-        for(User x: following){
-            followingList.add(i, x.getUserId());
-            i++;
-        }
+    public List<String> getTweets() {
+        return tweets;
+    }
+
+    public List<String> getNewsfeed() {
+        return newsfeed;
     }
 
     public DefaultListModel<String> getFollowingList() {
@@ -87,6 +88,7 @@ public class User extends Subject implements Observer, UserComponent{
     public void updateFeed(Subject tweet) {
         incomingTweet = ((User) tweet).getIncomingTweet();
         newsfeed.add(incomingTweet);
+        System.out.println(incomingTweet + " Updated the feed");
     }
 
     @Override
