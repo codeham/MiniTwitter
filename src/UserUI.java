@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 public class UserUI extends JFrame implements UIBuild{
     // Jframe main
@@ -11,10 +12,16 @@ public class UserUI extends JFrame implements UIBuild{
     AdminPanel adminPanel;
 
     // top list panel
-    JList topPanel;
+    JList<User> topPanelList;
+
+    // list model for list
+    DefaultListModel<User> userModel;
 
     // bottom list panel
-    JList bottomPanel;
+    JList bottomPanelList;
+
+    // followers list
+    JList<String> followers = new JList<>();
 
     // JPane
     JScrollPane topPane;
@@ -64,10 +71,10 @@ public class UserUI extends JFrame implements UIBuild{
         frame.add(followUser);
 
         // top text panel
-        frame.add(topPanel);
+        frame.add(topPanelList);
 
         // bottom text panel
-        frame.add(bottomPanel);
+        frame.add(bottomPanelList);
 
         // twitter message
         frame.add(twitterMessage);
@@ -79,13 +86,17 @@ public class UserUI extends JFrame implements UIBuild{
     }
 
     public void listManager(){
-        topPanel = new JList();
-        topPanel.setName("Current Following");
-        topPanel.setBounds(5,45,495,275);
+        topPanelList = new JList<>();
+        topPanelList.setName("Current Following");
+        topPanelList.setBounds(5,45,495,275);
+        userModel = new DefaultListModel<>();
+        topPanelList.setModel(userModel);
 
-        bottomPanel = new JList();
-        bottomPanel.setName("News Feed");
-        bottomPanel.setBounds(5,370,495,245);
+        populateUserModel();
+
+        bottomPanelList = new JList();
+        bottomPanelList.setName("News Feed");
+        bottomPanelList.setBounds(5,370,495,245);
 
     }
 
@@ -162,6 +173,8 @@ public class UserUI extends JFrame implements UIBuild{
             // add yourself to their followers list
             // register to observer to get tweets (Observer Pattern)
             user.addToFollowing(followingUser);
+            userModel.clear();
+            populateUserModel();
             followingUser.addToFollowers(user);
             followingUser.register(user);
             System.out.println(user.getUserId() + " is now following " +twitterUser );
@@ -170,6 +183,17 @@ public class UserUI extends JFrame implements UIBuild{
         }
 
         userId.setText("");
+    }
+
+    public void populateUserModel(){
+        // populate the user model with current user followings
+        List<User> currentFollowings = user.getFollowing();
+        if(currentFollowings == null){
+            System.out.println("You are currently not following anyone");
+        }
+        for(User x: currentFollowings){
+            userModel.addElement(x);
+        }
     }
 
     public static void main(String[] args){

@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultListModel;
 
 public class User extends Subject implements Observer, UserComponent{
     private String userId;
     private List<User> followers;
     private List<User> following;
+
+    private DefaultListModel<String> followingList;
+
     private List<String> newsfeed;
     private List<String> tweets;
     private String incomingTweet;
@@ -24,8 +28,20 @@ public class User extends Subject implements Observer, UserComponent{
         return followers;
     }
 
-    public List<User> getFollowing(){
+    public List<User> getFollowing() {
         return following;
+    }
+
+    public void updateFollowingList(){
+        int i = 0;
+        for(User x: following){
+            followingList.add(i, x.getUserId());
+            i++;
+        }
+    }
+
+    public DefaultListModel<String> getFollowingList() {
+        return followingList;
     }
 
     public void printId(){
@@ -59,6 +75,12 @@ public class User extends Subject implements Observer, UserComponent{
         this.incomingTweet = message;
         System.out.println("TWEET MESSAGE RECEIVED :  " + message );
         notifyObserver();
+    }
+
+    @Override
+    public String toString() {
+        // override to only return the ID of the object
+        return getUserId();
     }
 
     @Override
