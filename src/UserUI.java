@@ -135,26 +135,36 @@ public class UserUI extends JFrame implements UIBuild{
     }
 
     public void followUser(){
-        // check if the field isn't empty, check if the user exists, check if the user isn't already following
+        // check if the field isn't empty
         String twitterUser = userId.getText();
         if(twitterUser.trim().equals("")){
-            // empty field, throw error to user
             JOptionPane.showMessageDialog(frame, "Error: Enter a user ID !");
-//            userId.setText("");
-//            return;
+            userId.setText("");
+            return;
         }
 
-        // check if user is already a follower
-        if(user.checkAlreadyFollower(twitterUser)){
+        // can't follow yourself !!
+        if(twitterUser.equals(user.getUserId())){
+            JOptionPane.showMessageDialog(frame, "Error: Can't follow yourself !");
+            userId.setText("");
+            return;
+        }
+
+        // check if user is already being followed
+        if(user.checkAlreadyFollowing(twitterUser)){
             JOptionPane.showMessageDialog(frame, "Error: Already following that user !");
-//            userId.setText("");
-//            return;
+            userId.setText("");
+            return;
         }
 
-        // otherwise check if that user exists then add them to your followers list
+        // otherwise check if that user exists then...
         if(adminPanel.userController.checkUserExists(twitterUser)){
-            System.out.println(twitterUser + " is now following you " + user.getUserId());
-
+            User following = adminPanel.userController.grabUser(twitterUser);
+            // add them to your following list
+            // add yourself to their followers list
+            user.addToFollowing(following);
+            following.addToFollowers(user);
+            System.out.println(user.getUserId() + " is now following " +twitterUser );
         }else{
             JOptionPane.showMessageDialog(frame, "Error: User does not exist");
         }
