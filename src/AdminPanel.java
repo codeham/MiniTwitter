@@ -232,8 +232,9 @@ public class AdminPanel extends JFrame implements UIBuild{
         // if the selected node is not empty and is in fact a user (check by checking if node allows children)
 
         if(selectedNode != null && !selectedNode.getAllowsChildren()){
-            User selectedUser= (User)selectedNode.getUserObject();
-            UserUI userView = new UserUI(selectedUser);
+            User selectedUser = (User)selectedNode.getUserObject();
+//            UserUI userView = new UserUI(selectedUser);
+            new UserUI(selectedUser).setVisible(true);
         }else {
             JOptionPane.showMessageDialog(frame, "Error: Select user from tree!");
         }

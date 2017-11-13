@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserController extends DefaultMutableTreeNode{
-    private List<String> users;
+    private List<User> users;
     private List<String> groups;
 
     UserController(){
@@ -13,7 +13,7 @@ public class UserController extends DefaultMutableTreeNode{
         groups = new ArrayList<>();
     }
 
-    public List<String> getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
@@ -21,13 +21,16 @@ public class UserController extends DefaultMutableTreeNode{
         return groups;
     }
 
+
+
     // leaf being added directly to the root of the tree
     public DefaultMutableTreeNode addLeaf(String userId, DefaultMutableTreeNode rootNode){
         DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(new User(userId));
         // set allowing children to false since it is a leaf
         newUser.setAllowsChildren(false);
         rootNode.add(newUser);
-        users.add(userId);
+        // add User object to list
+        users.add((User)newUser.getUserObject());
 
         return newUser;
     }
@@ -37,7 +40,8 @@ public class UserController extends DefaultMutableTreeNode{
         DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(new User(userId));
         newUser.setAllowsChildren(false);
         selectedNode.add(newUser);
-        users.add(userId);
+        // add User object to list
+        users.add((User)newUser.getUserObject());
 
         return newUser;
     }
@@ -64,6 +68,15 @@ public class UserController extends DefaultMutableTreeNode{
         return newGroup;
     }
 
+    public User grabUser(String userId){
+        for(User x: users){
+            if(x.getUserId().equals(userId)){
+                return x;
+            }
+        }
+        return null;
+    }
+
 
     public boolean checkGroupRepeat(String groupId){
       for(String x: groups){
@@ -75,8 +88,8 @@ public class UserController extends DefaultMutableTreeNode{
     }
 
     public boolean checkUserExists(String userId){
-        for(String x: users){
-            if(x.equals(userId)){
+        for(User x: users){
+            if(x.getUserId().equals(userId)){
                 return true;
             }
         }

@@ -10,6 +10,12 @@ public class UserUI extends JFrame implements UIBuild{
     // Admin Panel Instance
     AdminPanel adminPanel;
 
+    // top list panel
+    JList topPanel;
+
+    // bottom list panel
+    JList bottomPanel;
+
     // JPane
     JScrollPane topPane;
     JScrollPane bottomPane;
@@ -41,7 +47,7 @@ public class UserUI extends JFrame implements UIBuild{
 
     private void UIbuilder(){
         textManager();
-        treeManager();
+        listManager();
         buttonManager();
         frameManager();
     }
@@ -57,41 +63,33 @@ public class UserUI extends JFrame implements UIBuild{
         frame.add(userId);
         frame.add(followUser);
 
-        // top tree
-        frame.add(topPane);
+        // top text panel
+        frame.add(topPanel);
+
+        // bottom text panel
+        frame.add(bottomPanel);
 
         // twitter message
         frame.add(twitterMessage);
         frame.add(postTweet);
 
-        // bottom tree
-        frame.add(bottomPane);
-
-
+        // frame dimensions
         frame.setSize(505,640);
         frame.setVisible(true);
     }
 
-    public void treeManager(){
-        // initialize tree nodes
-        DefaultMutableTreeNode topView = new DefaultMutableTreeNode("Tree View");
-        DefaultMutableTreeNode rootTop = new DefaultMutableTreeNode("Root");
+    public void listManager(){
+        topPanel = new JList();
+        topPanel.setName("Current Following");
+        topPanel.setBounds(5,45,495,275);
 
-        topView.add(rootTop);
-        currentFollowing = new JTree(topView);
-        topPane = new JScrollPane(currentFollowing);
-        topPane.setBounds(5,45,495,275);
-
-        DefaultMutableTreeNode bottomView = new DefaultMutableTreeNode("News Feed");
-        DefaultMutableTreeNode rootBottom = new DefaultMutableTreeNode("Root");
-
-        bottomView.add(rootBottom);
-        newsFeed = new JTree(bottomView);
-        bottomPane = new JScrollPane(newsFeed);
-        bottomPane.setBounds(5, 370, 495, 245);
-
+        bottomPanel = new JList();
+        bottomPanel.setName("News Feed");
+        bottomPanel.setBounds(5,370,495,245);
 
     }
+
+    public void treeManager(){}
 
     public void textManager(){
         userId = new JTextField();
@@ -159,16 +157,26 @@ public class UserUI extends JFrame implements UIBuild{
 
         // otherwise check if that user exists then...
         if(adminPanel.userController.checkUserExists(twitterUser)){
-            User following = adminPanel.userController.grabUser(twitterUser);
+            User followingUser = adminPanel.userController.grabUser(twitterUser);
             // add them to your following list
             // add yourself to their followers list
-            user.addToFollowing(following);
-            following.addToFollowers(user);
+            // register to observer to get tweets (Observer Pattern)
+            user.addToFollowing(followingUser);
+            followingUser.addToFollowers(user);
+            followingUser.register(user);
             System.out.println(user.getUserId() + " is now following " +twitterUser );
         }else{
             JOptionPane.showMessageDialog(frame, "Error: User does not exist");
         }
 
         userId.setText("");
+    }
+
+    public static void main(String[] args){
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new UserUI().setVisible(true);
+            }
+        });
     }
 }

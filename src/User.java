@@ -32,13 +32,21 @@ public class User extends Subject implements Observer, UserComponent{
         System.out.println("User ID: " + userId);
     }
 
-    public boolean checkAlreadyFollower(String user){
-        for(User x: followers){
+    public boolean checkAlreadyFollowing(String user){
+        for(User x: following){
             if(x.getUserId().equals(user)){
                 return true;
             }
         }
         return false;
+    }
+
+    public void addToFollowers( User followerUser){
+        followers.add(followerUser);
+    }
+
+    public void addToFollowing(User followingUser){
+        following.add(followingUser);
     }
 
     public String getIncomingTweet() {
