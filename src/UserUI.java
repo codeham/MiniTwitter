@@ -53,6 +53,10 @@ public class UserUI extends JFrame implements UIBuild{
 
     UserUI(User user){
         this.user = user;
+        // self register to observer to update self tweets
+        user.register(user);
+        int x = 0;
+        System.out.println("Register Count: " + ++x);
         System.out.println("User ID opened is: " + user.getUserId());
         adminPanel = AdminPanel.getInstance();
         UIbuilder();
@@ -77,10 +81,10 @@ public class UserUI extends JFrame implements UIBuild{
         frame.add(followUser);
 
         // top text panel
-        frame.add(topPanelList);
+        frame.add(topPane);
 
         // bottom text panel
-        frame.add(bottomPanelList);
+        frame.add(bottomPane);
 
         // twitter message
         frame.add(twitterMessage);
@@ -94,17 +98,19 @@ public class UserUI extends JFrame implements UIBuild{
     public void listManager(){
         topPanelList = new JList<>();
         topPanelList.setName("Current Following");
-        topPanelList.setBounds(5,45,495,275);
         userModel = new DefaultListModel<>();
         topPanelList.setModel(userModel);
+        topPane = new JScrollPane(topPanelList);
+        topPane.setBounds(5,45,495,275);
 
         populateUserModel();
 
         bottomPanelList = new JList();
         bottomPanelList.setName("News Feed");
-        bottomPanelList.setBounds(5,370,495,245);
         newsfeedModel = new DefaultListModel<>();
         bottomPanelList.setModel(newsfeedModel);
+        bottomPane = new JScrollPane(bottomPanelList);
+        bottomPane.setBounds(5,370,495,245);
 
         populateNewsFeedModel();
 
@@ -184,12 +190,11 @@ public class UserUI extends JFrame implements UIBuild{
             // add yourself to their followers list
             // register to observer to get tweets (Observer Pattern)
             user.addToFollowing(followingUser);
-            // clears the list and updates it
-            userModel.clear();
+            // clears the following list and updates it
             populateUserModel();
             followingUser.addToFollowers(user);
             followingUser.register(user);
-            System.out.println(user.getUserId() + " is now following " +twitterUser );
+            System.out.println(user.getUserId() + " is now following " + twitterUser );
         }else{
             JOptionPane.showMessageDialog(frame, "Error: User does not exist");
         }
@@ -199,6 +204,7 @@ public class UserUI extends JFrame implements UIBuild{
 
     public void populateUserModel(){
         // populate the user model with current user followings
+        userModel.clear();
         List<User> currentFollowings = user.getFollowing();
         if(currentFollowings == null){
             System.out.println("You are currently not following anyone");
@@ -210,9 +216,11 @@ public class UserUI extends JFrame implements UIBuild{
 
     public void populateNewsFeedModel(){
         // populate the news feed model with current news feed
+        newsfeedModel.clear();
         List<String> currentFeed = user.getNewsfeed();
-        if(currentFeed == null){
+        if(currentFeed.size() == 0){
             System.out.println("No activity in news feed");
+            return;
         }
         for(String x: currentFeed){
             newsfeedModel.addElement(x);

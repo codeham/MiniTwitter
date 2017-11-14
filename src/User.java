@@ -44,7 +44,7 @@ public class User extends Subject implements Observer, UserComponent{
     public DefaultListModel<String> getFollowingList() {
         return followingList;
     }
-
+    
     public void printId(){
         System.out.println("User ID: " + userId);
     }
@@ -73,7 +73,7 @@ public class User extends Subject implements Observer, UserComponent{
     public void tweetMessage(String message){
         // cache incoming tweets for tree views in UI
         tweets.add(message);
-        this.incomingTweet = message;
+        this.incomingTweet = getUserId() + ": " + message;
         System.out.println("TWEET MESSAGE RECEIVED :  " + message );
         notifyObserver();
     }
@@ -88,7 +88,8 @@ public class User extends Subject implements Observer, UserComponent{
     public void updateFeed(Subject tweet) {
         incomingTweet = ((User) tweet).getIncomingTweet();
         newsfeed.add(incomingTweet);
-        System.out.println(incomingTweet + " Updated the feed");
+        System.out.println("Feed Update: " + incomingTweet);
+        System.out.println("News Feed Qty. : " + newsfeed.size());
     }
 
     @Override
