@@ -6,7 +6,6 @@ public class Driver {
             @Override
             public void run() {
                 AdminPanel.getInstance().setVisible(true);
-                //UserUI.getInstance().setVisible(true);
             }
         });
     }

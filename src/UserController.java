@@ -1,12 +1,14 @@
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserController extends DefaultMutableTreeNode{
     private List<User> users;
     private List<String> groups;
+    private List<UserComponent> allComponents = new ArrayList<>();
 
     UserController(){
         users = new ArrayList<>();
@@ -21,51 +23,64 @@ public class UserController extends DefaultMutableTreeNode{
         return groups;
     }
 
-
-
-    // leaf being added directly to the root of the tree
-    public DefaultMutableTreeNode addLeaf(String userId, DefaultMutableTreeNode rootNode){
-        DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(new User(userId));
-        // set allowing children to false since it is a leaf
+    public void addLeaf(String userId, DefaultMutableTreeNode root){
+        // adding leaf directly to the root node of the tree
+        User x = new User(userId);
+        // add to the gui tree
+        DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(x);
+        // allowing children is false since it is a leaf & add to gui tree
         newUser.setAllowsChildren(false);
-        rootNode.add(newUser);
-        // add User object to list
-        users.add((User)newUser.getUserObject());
-
-        return newUser;
+        // add to gui JTree
+        root.add(newUser);
+        allComponents.add(x);
+        users.add(x);
     }
 
-    // leaf being added to a path
-    public DefaultMutableTreeNode addLeaf(DefaultMutableTreeNode selectedNode, String userId){
-        DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(new User(userId));
-        newUser.setAllowsChildren(false);
-        selectedNode.add(newUser);
-        // add User object to list
-        users.add((User)newUser.getUserObject());
-
-        return newUser;
-    }
-
-    // group being added directly to the root of the tree
-    public DefaultMutableTreeNode addGroup(String groupId, DefaultMutableTreeNode rootNode){
-        DefaultMutableTreeNode newGroup = new DefaultMutableTreeNode(new Group(groupId));
-        // set allowing children to true since it is a group
+    public void addGroup(String groupId, DefaultMutableTreeNode root){
+        Group x = new Group(groupId);
+        DefaultMutableTreeNode newGroup = new DefaultMutableTreeNode(x);
         newGroup.setAllowsChildren(true);
-        rootNode.add(newGroup);
+        root.add(newGroup);
+        // add to components list
+        allComponents.add(x);
+        groups.add(groupId);
+    }
+
+    public void addGroupToGroup(String groupId, DefaultMutableTreeNode selectedGroup){
+        Group x = new Group(groupId);
+        DefaultMutableTreeNode newGroup = new DefaultMutableTreeNode(x);
+        newGroup.setAllowsChildren(true);
+        // add to gui JTree
+        selectedGroup.add(newGroup);
+
+        // add new group to existing group
+        Group grabGroup = (Group)selectedGroup.getUserObject();
+        grabGroup.addUserComponent(x);
         groups.add(groupId);
 
-
-        return newGroup;
     }
 
-    // group being added to a path
-    public DefaultMutableTreeNode addGroup(DefaultMutableTreeNode selectedNode, String groupId){
-        DefaultMutableTreeNode newGroup = new DefaultMutableTreeNode(new Group(groupId));
-        newGroup.setAllowsChildren(true);
-        selectedNode.add(newGroup);
-        groups.add(groupId);
+    public void addLeafToGroup(String userId, DefaultMutableTreeNode selectedGroup){
+        // check if the selected group has a parent pointer (subgroup)
+        Group selectedGroupObject= (Group)selectedGroup.getUserObject();
 
-        return newGroup;
+        // adding a new leaf to group
+        User x = new User(userId);
+        // add to the gui node
+        DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(x);
+        // set allowing children to false, since it is a leaf
+        newUser.setAllowsChildren(false);
+        selectedGroup.add(newUser);
+
+        selectedGroupObject.addUserComponent(x);
+        users.add(x);
+    }
+
+    // testing purposes
+    public void printAllComponents(){
+        for(UserComponent component: allComponents){
+            component.print();
+        }
     }
 
     public User grabUser(String userId){
@@ -77,8 +92,19 @@ public class UserController extends DefaultMutableTreeNode{
         return null;
     }
 
+    public void iterateComponentCount(Visitor v){
+        for(UserComponent component: allComponents){
+            if(component instanceof Group){
+                Group groupComponent = (Group)component;
+                groupComponent.accept(v);
+            }else{
+                User userComponent = (User)component;
+                userComponent.accept(v);
+            }
+        }
+    }
 
-    public boolean checkGroupRepeat(String groupId){
+    public boolean checkGroupExists(String groupId){
       for(String x: groups){
           if(x.equals(groupId)){
               return true;

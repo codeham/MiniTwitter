@@ -2,12 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 
-public class User extends Subject implements Observer, UserComponent{
+public class User extends Subject implements Observer, UserComponent, Visitable{
     private String userId;
     private List<User> followers;
     private List<User> following;
-
-    private DefaultListModel<String> followingList;
 
     private List<String> newsfeed;
     private List<String> tweets;
@@ -41,10 +39,6 @@ public class User extends Subject implements Observer, UserComponent{
         return newsfeed;
     }
 
-    public DefaultListModel<String> getFollowingList() {
-        return followingList;
-    }
-    
     public void printId(){
         System.out.println("User ID: " + userId);
     }
@@ -71,10 +65,10 @@ public class User extends Subject implements Observer, UserComponent{
     }
 
     public void tweetMessage(String message){
-        // cache incoming tweets for tree views in UI
+        // incoming tweets from user
         tweets.add(message);
         this.incomingTweet = getUserId() + ": " + message;
-        System.out.println("TWEET MESSAGE RECEIVED :  " + message );
+        //System.out.println("TWEET MESSAGE RECEIVED :  " + message );
         notifyObserver();
     }
 
@@ -88,6 +82,7 @@ public class User extends Subject implements Observer, UserComponent{
     public void updateFeed(Subject tweet) {
         incomingTweet = ((User) tweet).getIncomingTweet();
         newsfeed.add(incomingTweet);
+
         System.out.println("Feed Update: " + incomingTweet);
         System.out.println("News Feed Qty. : " + newsfeed.size());
     }
@@ -98,7 +93,17 @@ public class User extends Subject implements Observer, UserComponent{
     }
 
     @Override
+    public void print(){
+        System.out.println("Current Tree (User): " + userId);
+    }
+
+    @Override
     public void addUserComponent(UserComponent newUserComponent) {
 
+    }
+
+    @Override
+    public void accept(Visitor v) {
+        v.visit(this);
     }
 }

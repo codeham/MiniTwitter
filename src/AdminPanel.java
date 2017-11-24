@@ -43,6 +43,7 @@ public class AdminPanel extends JFrame implements UIBuild{
     }
 
     public static AdminPanel getInstance(){
+        // double check lock for multi threading
         if (INSTANCE == null) {
             synchronized (AdminPanel.class) {
                 if (INSTANCE == null) {
@@ -60,10 +61,6 @@ public class AdminPanel extends JFrame implements UIBuild{
         labelManager();
         textManager();
         frameManager();
-
-    }
-
-    public void testLayouts(){
 
     }
 
@@ -128,60 +125,140 @@ public class AdminPanel extends JFrame implements UIBuild{
         groupIdLabel.setBounds(337, 41, 150, 35);
     }
 
-    public void addGroup(){
-        TreePath[] tp = tree.getSelectionPaths();
-        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
-        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
-        Icon folderIcon = new ImageIcon("closed.gif");
-        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-//        DefaultMutableTreeNode newGroup = new DefaultMutableTreeNode(groupId.getText());
-        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
-        boolean setText = false;
+//    public void addGroup(){
+//        TreePath[] tp = tree.getSelectionPaths();
+//        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+//        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+//        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
+//        boolean setText = false;
+//
+//        if(userController.checkGroupRepeat(groupId.getText())){
+//            // checks if group already exists
+//            JOptionPane.showMessageDialog(frame, "Error: User group already exists");
+//            groupId.setText("");
+//            return;
+//        }
+//
+//        if(tp != null){
+//            // selection paths are not empty
+//            for(TreePath tree: tp){
+//                if(!groupId.getText().trim().equals("") && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
+//                    // text field is not empty and the specified path in the tree allows children leafs
+//                    // add folder to tree, come back to this
+//                    //userController.addGroup(selectedNode, groupId.getText());
+//                    userController.addGroupToGroup(groupId.getText(), selectedNode);
+//                    model.reload();
+//                    groupId.setText("");
+//                    setText = true;
+//                }
+//            }
+//        }else if (tp == null && !groupId.getText().trim().equals("")){
+//            // user has not selected path
+//            // insert user into root by default
+//            //            model.insertNodeInto(newGroup, rootNode, rootNode.getChildCount());
+//            //userController.addGroup(rootNode, groupId.getText());
+//            userController.addGroup(groupId.getText(), rootNode);
+//            model.reload();
+//            groupId.setText("");
+//            setText = true;
+//        }
+//
+//        if(groupId.getText().trim().equals("") && !setText){
+//            // completely empty input field
+//            JOptionPane.showMessageDialog(frame, "Error: No user group to add !");
+//        }
+//
+//    }
 
-        if(userController.checkGroupRepeat(groupId.getText())){
-            // checks if group already exists
-            JOptionPane.showMessageDialog(frame, "Error: User group already exists");
+//    public void addUser(){
+//        TreePath[] tp = tree.getSelectionPaths();
+//        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+//        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+//        DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(userId.getText());
+//        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
+//        boolean setText = false;
+//
+//        if(userController.checkUserExists(userId.getText())){
+//            JOptionPane.showMessageDialog(frame, "Error: User already exists !");
+//            userId.setText("");
+//            return;
+//        }
+//
+//        if(tp != null){
+//            // selection paths are not empty (adding to a group)
+//            for(TreePath tree: tp){
+//                if(!userId.getText().trim().equals("") && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
+//                    // text field is not empty and the specified path in the tree allows children leafs
+//                    userController.addLeafToGroup(userId.getText(), selectedNode);
+//                    model.reload();
+//                    userId.setText("");
+//                    setText = true;
+//                }
+//            }
+//        }else if ((tp == null || (selectedNode == rootNode)) && !userId.getText().trim().equals("")){
+//            // user has not selected path
+//            // insert user into root by default
+//            userController.addLeaf(userId.getText(), rootNode);
+//            model.reload();
+//            userId.setText("");
+//            setText = true;
+//        }
+//
+//        if(userId.getText().trim().equals("") && !setText){
+//            // completely empty input field case
+//            JOptionPane.showMessageDialog(frame, "Error: No user to add !");
+//        }
+//
+//    }
+
+    public void addGroup(){
+        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
+        Boolean emptyField = groupId.getText().trim().equals("");
+
+        if(emptyField){
+            JOptionPane.showMessageDialog(frame, "Error: Empty Group !");
             groupId.setText("");
             return;
         }
 
-        if(tp != null){
-            // selection paths are not empty
-            for(TreePath tree: tp){
-                if(!groupId.getText().trim().equals("") && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
-                    // text field is not empty and the specified path in the tree allows children leafs
-                    // add folder to tree, come back to this
-                    userController.addGroup(selectedNode, groupId.getText());
-                    renderer.setLeafIcon(folderIcon);
-                    model.reload();
-                    groupId.setText("");
-                    setText = true;
-                }
-            }
-        }else if (tp == null && !groupId.getText().trim().equals("")){
-            // user has not selected path
-            // insert user into root by default
-            //            model.insertNodeInto(newGroup, rootNode, rootNode.getChildCount());
-            userController.addGroup(rootNode, groupId.getText());
-            model.reload();
+        if(userController.checkGroupExists(groupId.getText())){
+            JOptionPane.showMessageDialog(frame, "Error: Group already exists !");
             groupId.setText("");
-            setText = true;
+            return;
         }
 
-        if(groupId.getText().trim().equals("") && !setText){
-            // completely empty input field
-            JOptionPane.showMessageDialog(frame, "Error: No user group to add !");
+        if(tree.getSelectionPaths() == null){
+            userController.addGroup(groupId.getText(), rootNode);
+            reloadField(model);
+            return;
+        }
+
+        if(selectedNode.isRoot()){
+            userController.addGroup(groupId.getText(), rootNode);
+            reloadField(model);
+            return;
+        }
+
+        if(selectedNode != null && selectedNode.getAllowsChildren()){
+            userController.addGroupToGroup(groupId.getText(), selectedNode);
+            reloadField(model);
         }
 
     }
 
     public void addUser(){
-        TreePath[] tp = tree.getSelectionPaths();
         DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-        DefaultMutableTreeNode newUser = new DefaultMutableTreeNode(userId.getText());
         DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
-        boolean setText = false;
+        Boolean emptyField = userId.getText().trim().equals("");
+
+        if(emptyField){
+            JOptionPane.showMessageDialog(frame, "Error: Empty User !");
+            userId.setText("");
+            return;
+        }
 
         if(userController.checkUserExists(userId.getText())){
             JOptionPane.showMessageDialog(frame, "Error: User already exists !");
@@ -189,42 +266,55 @@ public class AdminPanel extends JFrame implements UIBuild{
             return;
         }
 
-        if(tp != null){
-            // selection paths are not empty
-            for(TreePath tree: tp){
-                if(!userId.getText().trim().equals("") && ((DefaultMutableTreeNode)tree.getLastPathComponent()).getAllowsChildren()){
-                    // text field is not empty and the specified path in the tree allows children leafs
-                    //model.insertNodeInto(newUser, selectedNode, selectedNode.getChildCount());
-                    userController.addLeaf(userId.getText(), selectedNode);
-                    //userController.addUser(userId.getText());
-                    model.reload();
-                    userId.setText("");
-                    setText = true;
-                }
-            }
-        }else if (tp == null && !userId.getText().trim().equals("")){
-            // user has not selected path
-            // insert user into root by default
-            //model.insertNodeInto(newUser, rootNode, rootNode.getChildCount());
+        if(tree.getSelectionPaths() == null){
             userController.addLeaf(userId.getText(), rootNode);
-            model.reload();
-            userId.setText("");
-            setText = true;
+            reloadField(model);
+            return;
         }
 
-        if(userId.getText().trim().equals("") && !setText){
-            // completely empty input field case
-            JOptionPane.showMessageDialog(frame, "Error: No user to add !");
+        if(selectedNode.isRoot()){
+            userController.addLeaf(userId.getText(), rootNode);
+            reloadField(model);
+            return;
         }
 
+        if(selectedNode != null){
+            // add user to group
+            if(selectedNode.getAllowsChildren()){
+                userController.addLeafToGroup(userId.getText(), selectedNode);
+                reloadField(model);
+            }
+        }
+    }
+
+    public void reloadField(DefaultTreeModel model){
+        model.reload();
+        userId.setText("");
+        groupId.setText("");
     }
 
     public void displayTotalUsers(){
-        JOptionPane.showMessageDialog(frame, "Total Users: " + userController.getUsers().size());
+        UserCount userVisitor = new UserCount();
+        userController.iterateComponentCount(userVisitor);
+        JOptionPane.showMessageDialog(frame, "Total Users: " + userVisitor.getCount());
     }
 
     public void displayTotalGroups(){
-        JOptionPane.showMessageDialog(frame, "Total Groups: " + userController.getGroups().size());
+        GroupCount groupVisitor = new GroupCount();
+        userController.iterateComponentCount(groupVisitor);
+        JOptionPane.showMessageDialog(frame, "Total Groups: " + groupVisitor.getCount());
+    }
+
+    public void displayMessageTotal(){
+        MessageCount messageCount = new MessageCount();
+        userController.iterateComponentCount(messageCount);
+        JOptionPane.showMessageDialog(frame, "Total Messages: " + messageCount.getMessageCount());
+    }
+
+    public void displayPositivePercent(){
+        PositiveCount positiveVisitor = new PositiveCount();
+        userController.iterateComponentCount(positiveVisitor);
+        JOptionPane.showMessageDialog(frame, "Total Messages: " + positiveVisitor.calculatePercent());
     }
 
     public void openUserView(){
@@ -290,6 +380,12 @@ public class AdminPanel extends JFrame implements UIBuild{
         messageTotal = new JButton();
         messageTotal.setText("Message Total");
         messageTotal.setBounds(390, 240, 150, 35);
+        messageTotal.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayMessageTotal();
+            }
+        });
 
 
         // show group total
@@ -307,5 +403,11 @@ public class AdminPanel extends JFrame implements UIBuild{
         positivePercentage = new JButton();
         positivePercentage.setText("Positive Percentage");
         positivePercentage.setBounds(550, 240, 150, 35);
+        positivePercentage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                displayPositivePercent();
+            }
+        });
     }
 }
