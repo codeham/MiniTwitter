@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class PositiveCount implements Visitor{
-    private final String[] positiveWords = {"Good", "Cool", "Amazing", "Wow", "Awesome", "Rad", "Great", "Congrats", "Proud", "Prosper", "Motivation"};
+    private final String[] positiveWords = {"good", "cool", "amazing", "wow", "awesome", "rad", "great", "congrats", "proud", "prosper", "motivation"};
     private final HashSet wordsTable = new HashSet();
 
     private int totalMessages = 0;
@@ -15,7 +15,7 @@ public class PositiveCount implements Visitor{
         for(String msg: messagesList){
             String[] words = msg.split(" ");
             for(String eachWord: words){
-                if(wordsTable.contains(eachWord)){
+                if(wordsTable.contains(eachWord.toLowerCase())){
                     // break out of loop, it's a positive message !
                     positiveCount++;
                     continue;

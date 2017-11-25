@@ -1,9 +1,11 @@
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Group implements UserComponent, Visitable{
     private String groupId;
     private List<UserComponent> components = new ArrayList<>();
+    private long creationTime;
 
     public String getGroupId() {
         return groupId;
@@ -38,7 +40,7 @@ public class Group implements UserComponent, Visitable{
     }
 
     @Override
-    public void accept(Visitor v) {
+    public void accept(Visitor v){
         v.visit(this);
         if(components != null){
             for (UserComponent component: components){

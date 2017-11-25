@@ -24,6 +24,8 @@ public class AdminPanel extends JFrame implements UIBuild{
     private JButton messageTotal;
     private JButton groupTotal;
     private JButton positivePercentage;
+    private JButton validateIds;
+    private JButton lastUserUpdate;
 
     // text fields
     private JTextField userId;
@@ -82,6 +84,10 @@ public class AdminPanel extends JFrame implements UIBuild{
 
         frame.add(userIdLabel);
         frame.add(groupIdLabel);
+
+        frame.add(lastUserUpdate);
+
+        frame.add(validateIds);
 
         frame.add(userView);
 
@@ -323,12 +329,25 @@ public class AdminPanel extends JFrame implements UIBuild{
 
         if(selectedNode != null && !selectedNode.getAllowsChildren()){
             User selectedUser = (User)selectedNode.getUserObject();
-//            UserUI userView = new UserUI(selectedUser);
+            System.out.println(selectedUser.getCreationTime());
             new UserUI(selectedUser).setVisible(true);
         }else {
             JOptionPane.showMessageDialog(frame, "Error: Select user from tree!");
         }
 
+    }
+
+    public void checkValidIds(){
+        ValidateID validateVisitor = new ValidateID();
+        userController.iterateComponentCount(validateVisitor);
+        System.out.println(validateVisitor.validate());
+        JOptionPane.showMessageDialog(frame, "Users/Groups IDs : " + validateVisitor.validate());
+    }
+
+    public void findLastUpdate(){
+        LastUserUpdate userUpdateVisitor = new LastUserUpdate();
+        userController.iterateComponentCount(userUpdateVisitor);
+        JOptionPane.showMessageDialog(frame, "Last Updated Tweet Time: " + userUpdateVisitor.sortTimes());
     }
 
     public void buttonManager(){
@@ -407,6 +426,27 @@ public class AdminPanel extends JFrame implements UIBuild{
             @Override
             public void actionPerformed(ActionEvent e) {
                 displayPositivePercent();
+            }
+        });
+
+        // display unique group names and user names & check spacing format
+        validateIds = new JButton();
+        validateIds.setText("Check Valid Users/Groups");
+        validateIds.setBounds(395, 125, 305, 35);
+        validateIds.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                checkValidIds();
+            }
+        });
+
+        lastUserUpdate = new JButton();
+        lastUserUpdate.setText("Last Update User");
+        lastUserUpdate.setBounds(395, 163, 305, 35);
+        lastUserUpdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                findLastUpdate();
             }
         });
     }

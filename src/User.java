@@ -1,4 +1,8 @@
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultListModel;
 
@@ -11,12 +15,35 @@ public class User extends Subject implements Observer, UserComponent, Visitable{
     private List<String> tweets;
     private String incomingTweet;
 
+    private long creationTime;
+    private long lastUpdateTime;
+
     public User(String userId){
         this.userId = userId;
+        this.creationTime = System.currentTimeMillis();
         tweets = new ArrayList<>();
         followers = new ArrayList<>();
         following = new ArrayList<>();
         newsfeed = new ArrayList<>();
+    }
+
+    public String getCreationTime(){
+        Date currentDate = new Date(creationTime);
+        System.out.println("Creation time stamp:");
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+        return dateFormat.format(currentDate);
+    }
+
+    public void tweetTimeStamp(){
+        this.lastUpdateTime = System.currentTimeMillis();
+    }
+
+    public String getTimeStamp(){
+        Date currentDate = new Date(lastUpdateTime);
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+        return dateFormat.format(currentDate);
     }
 
     public String getUserId() {
@@ -68,7 +95,6 @@ public class User extends Subject implements Observer, UserComponent, Visitable{
         // incoming tweets from user
         tweets.add(message);
         this.incomingTweet = getUserId() + ": " + message;
-        //System.out.println("TWEET MESSAGE RECEIVED :  " + message );
         notifyObserver();
     }
 
@@ -82,9 +108,7 @@ public class User extends Subject implements Observer, UserComponent, Visitable{
     public void updateFeed(Subject tweet) {
         incomingTweet = ((User) tweet).getIncomingTweet();
         newsfeed.add(incomingTweet);
-
-        System.out.println("Feed Update: " + incomingTweet);
-        System.out.println("News Feed Qty. : " + newsfeed.size());
+        tweetTimeStamp();
     }
 
     @Override
@@ -103,7 +127,7 @@ public class User extends Subject implements Observer, UserComponent, Visitable{
     }
 
     @Override
-    public void accept(Visitor v) {
+    public void accept(Visitor v){
         v.visit(this);
     }
 }
