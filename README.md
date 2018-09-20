@@ -1,5 +1,10 @@
 # Mini Twitter
 
+## Table of Contents
+1. [ Description. ](#desc)
+2. [ Creating a Social Network Simulation. ](#simulation)
+
+<a name="desc"></a>
 ## Project Description
 MiniTwitter is an admin control panel that recreates functioning Twitter user-facing behavior via a desktop application (Java Swing). The main objective of this application is to showcase multiple design patterns applied in Social Networking Services.
 
@@ -9,6 +14,7 @@ MiniTwitter is an admin control panel that recreates functioning Twitter user-fa
 * Visitor
 * Composite
 
+<a name="simulation"></a>
 ## Creating a Social Network Simulation
 
 ### Adding by User or Groups to Network
