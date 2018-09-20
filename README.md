@@ -27,13 +27,11 @@ MiniTwitter is an admin control panel that recreates functioning Twitter user-fa
 
 ### User View
 <img src="README_IMAGES/Open_User_View.png" width="898px" height="478px">
+<img src="README_IMAGES/User_Following.png" width="400px" height="450px">
 
  * Opening User View : Opens the user profile.
  * Following User : Showcases which users the current user is following. By following a 
    user, the current user will recieve that persons tweets.
-
-<img src="README_IMAGES/User_Following.png" width="400px" height="450px">
-
  * Post Tweet : Self explanatory, a posted tweet will be distrubted throughout the 
    followers within the nework.
 
