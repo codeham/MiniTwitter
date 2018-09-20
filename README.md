@@ -37,8 +37,8 @@ MiniTwitter is an admin control panel that recreates functioning Twitter user-fa
    followers within the nework.
 
 <a name="features"></a>
-<img src="README_IMAGES/features.png">
 ### Additional Features
+<img src="README_IMAGES/features.png" width="400px">
 * Last Update User: Displays the time and date the last update was made in the network by
   a user.
 * User Total: Calculates user total in the network
