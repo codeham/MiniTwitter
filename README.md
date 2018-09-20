@@ -3,6 +3,7 @@
 ## Table of Contents
 1. [ Description. ](#desc)
 2. [ Creating a Social Network Simulation. ](#simulation)
+3. [ Additional Features. ](#features)
 
 <a name="desc"></a>
 ## Project Description
@@ -34,3 +35,16 @@ MiniTwitter is an admin control panel that recreates functioning Twitter user-fa
 <img src="README_IMAGES/User_Following.png" width="400px" height="450px">
  * Post Tweet : Self explanatory, a posted tweet will be distrubted throughout the 
    followers within the nework.
+
+<a name="features"></a>
+<img src="README_IMAGES/features.png">
+### Additional Features
+* Last Update User: Displays the time and date the last update was made in the network by
+  a user.
+* User Total: Calculates user total in the network
+* Group Total: Calculates group total in the network
+* Message Total: Calculates message total in the network
+* Positive Percentage: Determines whether a tweet shows positivity based on a list of 
+  keywords
+
+
