@@ -28,23 +28,25 @@ MiniTwitter is an admin control panel that recreates functioning Twitter user-fa
 ### User View
 <img src="README_IMAGES/Open_User_View.png" width="898px" height="478px">
 
- * Opening User View : Opens the user profile
+ * Opening User View : Opens the user profile.
  * Following User : Showcases which users the current user is following. By following a 
    user, the current user will recieve that persons tweets.
 
 <img src="README_IMAGES/User_Following.png" width="400px" height="450px">
+
  * Post Tweet : Self explanatory, a posted tweet will be distrubted throughout the 
    followers within the nework.
 
 <a name="features"></a>
-### Additional Features
+## Additional Features
 <img src="README_IMAGES/features.png" width="400px">
-* Last Update User: Displays the time and date the last update was made in the network by
+
+* Last Update User: Displays the time and date the last update was made in the network by 
   a user.
-* User Total: Calculates user total in the network
-* Group Total: Calculates group total in the network
-* Message Total: Calculates message total in the network
+* User Total: Calculates user total in the network.
+* Group Total: Calculates group total in the network.
+* Message Total: Calculates message total in the network.
 * Positive Percentage: Determines whether a tweet shows positivity based on a list of 
-  keywords
+  keywords.
 
 
